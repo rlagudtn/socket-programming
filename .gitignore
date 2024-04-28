@@ -1,0 +1,21 @@
+# Ignore all
+*
+
+# Unignore all with extensions
+!*.*
+
+# Unignore all dirs
+!*/
+
+# 이미지 파일 무시
+*.png
+*.jpg
+*.jpeg
+*.gif
+
+# ZIP 파일 무시
+*.zip
+
+# PDF 파일 무시
+*.pdf
+*.DS_Store
