@@ -5,15 +5,16 @@
 #include <arpa/inet.h>
 #include <sys/socket.h>
 #include <sys/epoll.h>
-
 #define BUF_SIZE 100
 #define EPOLL_SIZE 50
 void error_handling(char *message);
+
 
 int main(int argc,char *argv[]){
   int serv_sock,clnt_sock,epfd;
   struct sockaddr_in serv_adr,clnt_adr;
   socklen_t adr_sz;
+  int str_len;
   char buf[BUF_SIZE];
 
   struct epoll_event *ep_events;
@@ -55,7 +56,7 @@ int main(int argc,char *argv[]){
     for (int i=0;i<event_cnt;i++){
       if(ep_events[i].data.fd==serv_sock){ //연결 요청 이벤트가 발생한 경우
         adr_sz=sizeof(clnt_adr);
-        clnt_sock=accept(serv_sock,(struct sockaddr*)&clnt_adr,adr_sz);
+        clnt_sock=accept(serv_sock,(struct sockaddr*)&clnt_adr,&adr_sz);
         event.events=EPOLL_CTL_ADD;
         event.data.fd=clnt_sock;
         epoll_ctl(epfd,EPOLL_CTL_ADD,clnt_sock,&event);

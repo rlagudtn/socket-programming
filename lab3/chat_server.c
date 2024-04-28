@@ -4,8 +4,14 @@
 #include <arpa/inet.h>
 #include <sys/socket.h>
 #include <unistd.h>
+#include <pthread.h>
 
+#define BUF_SIZE 100
+#define MAX_CLNT 256
 pthread_mutex_t mutex;
+
+int clnt_socks[MAX_CLNT];
+int clnt_cnt=0;
 
 void error_handling(char * message);
 void *handle_clnt(void *arg);
@@ -15,7 +21,7 @@ int main(int argc, char *argv[]){
   int serv_sock,clnt_sock;
   struct sockaddr_in serv_adr,clnt_adr;
   socklen_t adr_sz;
-  pthread_t t_id;
+   pthread_t t_id;
 
   if(argc!=2){
     printf("Usage: %s <port>\n",argv[0]);
@@ -46,7 +52,6 @@ int main(int argc, char *argv[]){
     pthread_mutex_lock(&mutex);
     clnt_socks[clnt_cnt++]=clnt_sock;
     pthread_mutex_unlock(&mutex);
-
     pthread_create(&t_id,NULL,handle_clnt,(void*)&clnt_sock);
     pthread_detach(t_id);
     printf("Connected client IP: %s\n",inet_ntoa(clnt_adr.sin_addr));
@@ -63,12 +68,14 @@ void error_handling(char * message){
 }
 
 void *handle_clnt(void *arg){
-  int clnt_sock=((int*)arg);
+  int clnt_sock=*((int*)arg);
   int str_len=0,i;
   char msg[BUF_SIZE];
 
-  while((str_len=read(clnt_sock,msg,sizeof(msg)))>0)
+  while((str_len=read(clnt_sock,msg,sizeof(msg)))>0){
+
     send_msg(msg,str_len);
+  }
 
   pthread_mutex_lock(&mutex);
   for(i=0;i<clnt_cnt;i++){
@@ -86,8 +93,9 @@ void *handle_clnt(void *arg){
 void send_msg(char *msg, int len){
   int i;
   pthread_mutex_lock(&mutex);
-  for(i=0;i<clnt_cnt;i++)
+  for(i=0;i<clnt_cnt;i++){
     write(clnt_socks[i],msg,len);
+  }
   pthread_mutex_unlock(&mutex);
 
 }
