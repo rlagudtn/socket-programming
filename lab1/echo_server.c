@@ -7,13 +7,7 @@
 
 #define BUF_SIZE 1024
 void error_handling(char * message);
-struct sockaddr_in_frame{
-  sin_family; // 주소 체계 | AF_INET(IPv4), AF_INET6(IPv6), AF_LOCAL(로컬 통신)
-  sin_addr; //32bit ip 주소 .s_addr에 저장
-  sin_port; //16bit port 번호
 
-  sin_zero[8]; //사용 x 공간 채우는 용. 
-};
 int main(int argc, char *argv[]){
   int serv_sock,clnt_sock;
   char message[BUF_SIZE];
