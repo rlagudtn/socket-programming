@@ -14,24 +14,25 @@ int main(int argc,char * argv[]){
     struct sockaddr_in serv_adr;
     char buffer[BUFSIZE];
 
-    printf("[TCP server  for chatting LED...]\n");
-
+    printf("[TCP client for chatting and controlling LED....]\n");
+    
     if((sock_fd=socket(PF_INET,SOCK_STREAM,0))==-1){
         perror("error sock()");
         exit(1);
     }
-
     serv_adr.sin_family=AF_INET;
     serv_adr.sin_addr.s_addr=inet_addr(argv[1]);
     serv_adr.sin_port=htons(PORTNUM);
 
     if(connect(sock_fd,(struct sockaddr *)&serv_adr,sizeof(serv_adr))==-1){
         perror("error conneting");
+        close(sock_fd);
         exit(1);
         
     }
 
     memset(buffer,0x00,sizeof(buffer));
+
     if(read(sock_fd,buffer,BUFSIZE)==-1){
         perror("error reading");
         exit(1);

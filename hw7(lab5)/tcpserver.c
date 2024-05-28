@@ -11,7 +11,14 @@
 #define BUFSIZE 256
 
 #define pin 18
-
+void blink_led(int n) {
+    for (int i = 0; i < n; i++) {
+        gpioWrite(pin, 1); // LED ON
+        sleep(1); // 1초 대기
+        gpioWrite(pin, 0); // LED OFF
+        sleep(1); // 1초 대기
+    }
+}
 int main(){
     struct sockaddr_in serv_adr,clnt_adr;
     int serv_fd, clnt_fd, clnt_len;
@@ -66,6 +73,11 @@ loop:
             gpioWrite(pin,0);
         else if(buffer[0]=='1')
             gpioWrite(pin,1);
+        else if(buffer[0]=='b'){
+            int n=buffer[1]-'0';
+            printf("n >>%d\n",n);
+            blink_led(n);
+        }
 
         memset(buffer,0x00,sizeof(buffer));
         printf("[Server] Enter key(s):");
