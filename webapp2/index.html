@@ -1,0 +1,30 @@
+<!-- templates/index.html -->
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>출석부</title>
+    <style>
+        body {
+            font-size: 20px;
+        }
+        .large-font {
+            font-size: 30px;
+        }
+    </style>
+</head>
+<body>
+    <h1>출석부</h1>
+    <form action="/register" method="post">
+        이름: <input type="text" name="name" required>
+        <button type="submit" class="large-font">출석</button>
+    </form>
+    <h2>출석 정보</h2>
+    <ul>
+        {% for entry in attendance %}
+            <li>{{ entry.name }} - {{ entry.date }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
